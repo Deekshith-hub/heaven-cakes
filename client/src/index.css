@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F7FAFC;
+  color: #1A202C;
+}
+
+/* Custom Scrollbar for the main page (keep this if you like it on the main body) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #B19470;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #43766C;
+}
+
+/* --- NEW ADDITION: Utility to hide scrollbar but keep functionality --- */
+@layer utilities {
+  /* For Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* For IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
