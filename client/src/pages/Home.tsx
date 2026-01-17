@@ -67,7 +67,7 @@ export default function Home({ addToCart, searchTerm }: HomeProps) {
             Happiness is <br className="hidden md:block"/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#43766C] to-[#B19470]">Homemade.</span>
             </h1>
             <p className="text-gray-600 text-base md:text-xl max-w-lg mx-auto leading-relaxed mb-8">
-                Premium Bento cakes and artisanal sweets, baked fresh just for you.
+                We bake all kind of cakes for every occasion with love and the finest ingredients.
             </p>
             <button onClick={() => document.getElementById('shop-section')?.scrollIntoView({ behavior: 'smooth' })} className="bg-[#43766C] text-white px-8 py-3.5 rounded-full font-bold text-base md:text-lg shadow-lg shadow-[#43766C]/30 active:scale-95 transition-transform">
             Order Now ↓

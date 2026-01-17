@@ -25,7 +25,7 @@ export default function Navbar({ cartCount, searchTerm, setSearchTerm }: NavbarP
                 Heaven Cakes
               </span>
               <span className="text-[10px] font-bold tracking-widest text-[#B19470] uppercase mt-0.5">
-                Artisan Bakery
+                Fresh & Delicious Cakes..
               </span>
             </div>
           </Link>
