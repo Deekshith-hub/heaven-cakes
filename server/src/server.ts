@@ -4,9 +4,9 @@ import cors from 'cors';
 import connectDB from './config/db';
 import Product from './models/Product';
 import { upload } from './config/cloudinary';
-import { createOrder } from './controllers/orderController';
+import { createOrder, getAllOrders, updateOrderStatus } from './controllers/orderController';
 import { login } from './controllers/authController';
-import { createUser, getAllUsers, deleteUser } from './controllers/userController'; // Import new controller
+import { createUser, getAllUsers, deleteUser } from './controllers/userController';
 import { auth } from './middleware/auth';
 
 dotenv.config();
@@ -16,13 +16,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// --- MIDDLEWARE FOR ROLE CHECK ---
+// --- MIDDLEWARE ---
 const requireSuperAdmin = (req: any, res: any, next: any) => {
-    if (req.user && req.user.role === 'super-admin') {
-        next();
-    } else {
-        res.status(403).json({ message: 'Access Denied: Super Admin only' });
-    }
+    if (req.user && req.user.role === 'super-admin') next();
+    else res.status(403).json({ message: 'Super Admin access required' });
 };
 
 // --- ROUTES ---
@@ -30,19 +27,14 @@ const requireSuperAdmin = (req: any, res: any, next: any) => {
 // Auth
 app.post('/api/auth/login', login);
 
-// Product Routes
+// Products
 app.get('/api/products', async (req, res) => {
     const products = await Product.find();
     res.json(products);
 });
 
-// CAKE UPLOAD: Protected (Any logged in user can upload, BUT frontend hides it for Super Admin)
-// If you want to strictly ban Super Admin from uploading API-side, add a check here.
 app.post('/api/products', auth, upload.single('image'), async (req: any, res: any): Promise<void> => {
     try {
-        // OPTIONAL: Strictly forbid super-admin from uploading
-        // if (req.user.role === 'super-admin') return res.status(403).json({ message: "Super Admins cannot upload cakes." });
-
         const { title, description, category, variants } = req.body;
         if (!req.file) { res.status(400).json({ message: 'Image is required' }); return; }
 
@@ -62,10 +54,12 @@ app.post('/api/products', auth, upload.single('image'), async (req: any, res: an
     }
 });
 
-// Order Route
-app.post('/api/orders', createOrder);
+// Orders
+app.post('/api/orders', createOrder); // Public place order
+app.get('/api/orders', auth, getAllOrders); // Admin view all
+app.put('/api/orders/:id', auth, updateOrderStatus); // Admin update status
 
-// --- NEW USER MANAGEMENT ROUTES (Super Admin Only) ---
+// User Management (Super Admin)
 app.get('/api/users', auth, requireSuperAdmin, getAllUsers);
 app.post('/api/users', auth, requireSuperAdmin, createUser);
 app.delete('/api/users/:id', auth, requireSuperAdmin, deleteUser);
