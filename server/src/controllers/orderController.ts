@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Order from '../models/Order';
+import { sendOrderEmail } from '../utils/email'; // Import the new service
 
-// Create Order (Public)
 export const createOrder = async (req: Request, res: Response) => {
   try {
     const { customerName, phone, address, items, totalAmount, deliveryDate, timeSlot } = req.body;
@@ -22,8 +22,9 @@ export const createOrder = async (req: Request, res: Response) => {
 
     const savedOrder = await newOrder.save();
     
-    // In a real app, trigger Email/SMS notification logic here
-    console.log(`Notification: Order #${savedOrder._id} placed for ${customerName}`);
+    // --- SEND EMAIL NOTIFICATION ---
+    // We don't await this because we don't want to make the user wait for the email to send
+    sendOrderEmail(savedOrder); 
 
     res.status(201).json(savedOrder);
   } catch (error) {
@@ -32,10 +33,9 @@ export const createOrder = async (req: Request, res: Response) => {
   }
 };
 
-// Get All Orders (Admin Only)
+// ... keep getAllOrders and updateOrderStatus as they were
 export const getAllOrders = async (req: Request, res: Response) => {
   try {
-    // Sort by most recent first
     const orders = await Order.find().sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
@@ -43,15 +43,10 @@ export const getAllOrders = async (req: Request, res: Response) => {
   }
 };
 
-// Update Order Status (Admin Only)
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const { status } = req.body;
-    const order = await Order.findByIdAndUpdate(
-      req.params.id, 
-      { status }, 
-      { new: true }
-    );
+    const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
     res.json(order);
   } catch (error) {
     res.status(500).json({ message: 'Failed to update status' });
