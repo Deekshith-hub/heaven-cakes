@@ -13,7 +13,10 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*", // Allow all origins (Easiest for deployment)
+  credentials: true
+}));
 app.use(express.json());
 
 // --- MIDDLEWARE ---
