@@ -12,7 +12,6 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
 
   // Fake rating generation for UI demo (random 4.0 to 5.0)
   const rating = product.rating || (Math.random() * (5.0 - 4.0) + 4.0).toFixed(1);
-  const reviews = Math.floor(Math.random() * 50) + 5;
 
   return (
     <div 
