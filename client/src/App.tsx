@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Cart from './pages/Cart';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
+import Checkout from './pages/Checkout';
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { token } = useAuth();
@@ -73,6 +74,7 @@ export default function App() {
               {/* Pass Search Term to Home */}
               <Route path="/" element={<Home addToCart={addToCart} searchTerm={searchTerm} />} />
               <Route path="/cart" element={<Cart cart={cart} setCart={setCart} />} />
+              <Route path="/checkout" element={<Checkout cart={cart} setCart={setCart} />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin" element={
                 <ProtectedRoute>
