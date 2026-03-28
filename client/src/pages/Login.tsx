@@ -19,7 +19,7 @@ export default function Login() {
       login(res.data.token, res.data.role);
       toast.success('Welcome back, Admin!');
       navigate('/admin');
-    } catch (e) {
+    } catch {
       toast.error('Invalid Credentials');
     } finally {
       setLoading(false);
@@ -27,10 +27,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-[#F8FAE5] p-4">
-      <div className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md border border-white/50 backdrop-blur-xl">
+    <div className="min-h-[80vh] flex items-center justify-center bg-[#F8FAE5] dark:bg-slate-900 p-4">
+      <div className="bg-white dark:bg-slate-800 p-10 rounded-3xl shadow-xl w-full max-w-md border border-white/50 dark:border-slate-700 backdrop-blur-xl">
         <div className="text-center mb-10">
-          <div className="w-16 h-16 bg-[#F8FAE5] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-[#43766C]/20">
+          <div className="w-16 h-16 bg-[#F8FAE5] dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-[#43766C]/20">
             👑
           </div>
           <h1 className="text-3xl font-bold text-[#43766C]">Admin Access</h1>
@@ -39,18 +39,18 @@ export default function Login() {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Username</label>
+            <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">Username</label>
             <input 
               type="text" 
-              className="w-full mt-1 bg-gray-50 border border-gray-200 p-4 rounded-xl focus:outline-none focus:border-[#43766C] focus:ring-1 focus:ring-[#43766C] transition"
+              className="w-full mt-1 bg-gray-50 dark:bg-slate-700 dark:text-gray-100 border border-gray-200 dark:border-slate-600 p-4 rounded-xl focus:outline-none focus:border-[#43766C] focus:ring-1 focus:ring-[#43766C] transition"
               onChange={e => setUsername(e.target.value)}
             />
           </div>
           <div>
-            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Password</label>
+            <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">Password</label>
             <input 
               type="password" 
-              className="w-full mt-1 bg-gray-50 border border-gray-200 p-4 rounded-xl focus:outline-none focus:border-[#43766C] focus:ring-1 focus:ring-[#43766C] transition"
+              className="w-full mt-1 bg-gray-50 dark:bg-slate-700 dark:text-gray-100 border border-gray-200 dark:border-slate-600 p-4 rounded-xl focus:outline-none focus:border-[#43766C] focus:ring-1 focus:ring-[#43766C] transition"
               onChange={e => setPassword(e.target.value)}
             />
           </div>

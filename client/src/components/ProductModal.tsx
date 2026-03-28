@@ -20,24 +20,24 @@ export default function ProductModal({ product, onClose, onAddToCart, onBuyNow }
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-[#1A202C]/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#1A202C]/60 dark:bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       ></div>
 
       {/* Modal Content */}
-      <div className="relative bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto scrollbar-hide flex flex-col md:flex-row shadow-2xl animate-[fadeIn_0.3s_ease-out]">
+      <div className="relative bg-white dark:bg-slate-800 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto scrollbar-hide flex flex-col md:flex-row shadow-2xl animate-[fadeIn_0.3s_ease-out]">
         
         {/* Close Button */}
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/80 hover:bg-white text-gray-500 hover:text-red-500 transition shadow-sm backdrop-blur-sm"
+          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-700 text-gray-500 dark:text-gray-300 hover:text-red-500 transition shadow-sm backdrop-blur-sm"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
 
-        <div className="w-full md:w-1/2 h-64 md:h-auto flex-shrink-0 bg-[#F8FAE5] relative flex items-center justify-center p-6 md:p-10">
+        <div className="w-full md:w-1/2 h-64 md:h-auto flex-shrink-0 bg-[#F8FAE5] dark:bg-slate-700 relative flex items-center justify-center p-6 md:p-10">
           <img 
             src={product.imageUrl} 
             alt={product.title} 
@@ -50,10 +50,10 @@ export default function ProductModal({ product, onClose, onAddToCart, onBuyNow }
           <span className="text-[#B19470] font-bold text-xs md:text-sm tracking-widest uppercase mb-2">
             {product.category}
           </span>
-          <h2 className="text-2xl md:text-3xl font-bold text-[#1A202C] mb-3 md:mb-4 leading-tight">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1A202C] dark:text-gray-100 mb-3 md:mb-4 leading-tight">
             {product.title}
           </h2>
-          <p className="text-gray-500 mb-6 text-sm md:text-base leading-relaxed">
+          <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm md:text-base leading-relaxed">
             {product.description}
           </p>
 
@@ -69,8 +69,8 @@ export default function ProductModal({ product, onClose, onAddToCart, onBuyNow }
                   onClick={() => setSelectedVariant(v)}
                   className={`px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-medium transition-all border-2
                     ${selectedVariant.weight === v.weight 
-                      ? 'border-[#43766C] bg-[#F8FAE5] text-[#43766C]' 
-                      : 'border-gray-100 bg-white text-gray-500 hover:border-gray-200'}`}
+                      ? 'border-[#43766C] bg-[#F8FAE5] dark:bg-slate-700 text-[#43766C]' 
+                      : 'border-gray-100 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-400 hover:border-gray-200 dark:hover:border-slate-500'}`}
                 >
                   {v.weight} kg
                 </button>
@@ -87,7 +87,7 @@ export default function ProductModal({ product, onClose, onAddToCart, onBuyNow }
               <input 
                 type="text"
                 placeholder="e.g. Happy Birthday John!"
-                className="w-full bg-[#F7FAFC] border border-gray-200 p-3 rounded-xl focus:outline-none focus:border-[#43766C] transition text-sm text-[#1A202C]"
+                className="w-full bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 dark:placeholder-gray-400 border border-gray-200 dark:border-slate-600 p-3 rounded-xl focus:outline-none focus:border-[#43766C] transition text-sm text-[#1A202C]"
                 value={customMessage}
                 onChange={(e) => setCustomMessage(e.target.value)}
                 maxLength={40}
@@ -100,7 +100,7 @@ export default function ProductModal({ product, onClose, onAddToCart, onBuyNow }
               <textarea 
                 rows={2}
                 placeholder="e.g. Less cream, Chocolate flavor..."
-                className="w-full bg-[#F7FAFC] border border-gray-200 p-3 rounded-xl focus:outline-none focus:border-[#43766C] transition text-sm resize-none text-[#1A202C]"
+                className="w-full bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 dark:placeholder-gray-400 border border-gray-200 dark:border-slate-600 p-3 rounded-xl focus:outline-none focus:border-[#43766C] transition text-sm resize-none text-[#1A202C]"
                 value={customization}
                 onChange={(e) => setCustomization(e.target.value)}
               />
@@ -108,7 +108,7 @@ export default function ProductModal({ product, onClose, onAddToCart, onBuyNow }
           </div>
 
           {/* Footer Actions (Price + Buttons) */}
-          <div className="mt-auto pt-6 border-t border-gray-100">
+          <div className="mt-auto pt-6 border-t border-gray-100 dark:border-slate-700">
             <div className="flex justify-between items-center mb-4">
               <span className="text-xs text-gray-400 font-bold uppercase">Total Price</span>
               <span className="text-3xl font-bold text-[#43766C]">
@@ -123,7 +123,7 @@ export default function ProductModal({ product, onClose, onAddToCart, onBuyNow }
                   onAddToCart(product, selectedVariant, customMessage, customization);
                   onClose();
                 }}
-                className="flex-1 border-2 border-[#43766C] text-[#43766C] bg-white px-4 py-3 rounded-xl font-bold text-base hover:bg-[#F8FAE5] transition-colors active:scale-95"
+                className="flex-1 border-2 border-[#43766C] text-[#43766C] bg-white dark:bg-slate-800 px-4 py-3 rounded-xl font-bold text-base hover:bg-[#F8FAE5] dark:hover:bg-slate-700 transition-colors active:scale-95"
               >
                 Add to Cart
               </button>
