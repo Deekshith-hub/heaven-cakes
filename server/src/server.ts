@@ -65,7 +65,7 @@ app.post('/api/products', auth, upload.single('image'), async (req: any, res: an
 
         let parsedVariants = [];
         try { parsedVariants = JSON.parse(variants); } 
-        catch (e) { res.status(400).json({ message: 'Invalid variants format' }); return; }
+        catch { res.status(400).json({ message: 'Invalid variants format' }); return; }
 
         if (!Array.isArray(parsedVariants) || parsedVariants.length === 0) {
             res.status(400).json({ message: 'At least one variant is required' }); return;

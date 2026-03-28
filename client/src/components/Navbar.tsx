@@ -64,7 +64,7 @@ export default function Navbar({ cartCount, searchTerm, setSearchTerm }: NavbarP
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              aria-label="Toggle between light and dark theme"
               className="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
             >
               {isDark ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5" />}
@@ -75,7 +75,7 @@ export default function Navbar({ cartCount, searchTerm, setSearchTerm }: NavbarP
           <div className="md:hidden flex items-center gap-2">
             <button
               onClick={toggleTheme}
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              aria-label="Toggle between light and dark theme"
               className="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
             >
               {isDark ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5" />}

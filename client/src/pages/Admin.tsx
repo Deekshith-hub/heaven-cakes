@@ -254,8 +254,8 @@ export default function Admin() {
                 <label className="text-xs font-bold text-gray-400 uppercase ml-1 mb-2 block">Price Options</label>
                 {variants.map((v, i) => (
                   <div key={i} className="flex gap-3 mb-2">
-                    <input type="number" placeholder="Kg" className="bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border border-gray-100 dark:border-slate-600 w-1/3 text-center" value={v.weight} onChange={e => { const n = [...variants]; n[i] = { ...n[i], weight: parseFloat(e.target.value) || 0 }; setVariants(n); }} />
-                    <input type="number" placeholder="₹ Price" className="bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border border-gray-100 dark:border-slate-600 w-1/3 text-center" value={v.price} onChange={e => { const n = [...variants]; n[i] = { ...n[i], price: parseFloat(e.target.value) || 0 }; setVariants(n); }} />
+                    <input type="number" placeholder="Kg" className="bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border border-gray-100 dark:border-slate-600 w-1/3 text-center" value={v.weight} onChange={e => { const updatedVariants = [...variants]; updatedVariants[i] = { ...updatedVariants[i], weight: parseFloat(e.target.value) || 0 }; setVariants(updatedVariants); }} />
+                    <input type="number" placeholder="₹ Price" className="bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border border-gray-100 dark:border-slate-600 w-1/3 text-center" value={v.price} onChange={e => { const updatedVariants = [...variants]; updatedVariants[i] = { ...updatedVariants[i], price: parseFloat(e.target.value) || 0 }; setVariants(updatedVariants); }} />
                     {i > 0 && <button type="button" onClick={() => setVariants(variants.filter((_, idx) => idx !== i))} className="text-red-400 px-2 font-bold">×</button>}
                   </div>
                 ))}
