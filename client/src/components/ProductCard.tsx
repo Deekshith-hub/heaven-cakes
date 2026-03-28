@@ -18,11 +18,11 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
       onClick={onClick}
       className="group bg-white rounded-2xl p-3 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 cursor-pointer h-full flex flex-col"
     >
-      <div className="relative h-56 w-full rounded-xl overflow-hidden mb-4 bg-gray-50">
+      <div className="relative h-56 w-full rounded-xl overflow-hidden mb-4 bg-gray-50 p-4">
         <img 
             src={product.imageUrl} 
             alt={product.title} 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            className="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-700"
         />
         <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-lg text-xs font-bold text-[#43766C] shadow-sm uppercase tracking-wider">
             {product.category}

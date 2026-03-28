@@ -5,7 +5,7 @@ interface ProductModalProps {
   product: Product;
   onClose: () => void;
   onAddToCart: (product: Product, variant: Variant, msg?: string, cust?: string) => void;
-  onBuyNow: (product: Product, variant: Variant, msg?: string, cust?: string) => void; // New Prop
+  onBuyNow: (product: Product, variant: Variant, msg?: string, cust?: string) => void;
 }
 
 export default function ProductModal({ product, onClose, onAddToCart, onBuyNow }: ProductModalProps) {
@@ -37,12 +37,11 @@ export default function ProductModal({ product, onClose, onAddToCart, onBuyNow }
           </svg>
         </button>
 
-        {/* Image Side */}
-        <div className="w-full md:w-1/2 h-48 md:h-auto flex-shrink-0 bg-[#F8FAE5] relative">
+        <div className="w-full md:w-1/2 h-64 md:h-auto flex-shrink-0 bg-[#F8FAE5] relative flex items-center justify-center p-6 md:p-10">
           <img 
             src={product.imageUrl} 
             alt={product.title} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain drop-shadow-xl"
           />
         </div>
 
