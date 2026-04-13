@@ -9,22 +9,17 @@ interface CartProps {
 export default function Cart({ cart, setCart }: CartProps) {
   const navigate = useNavigate();
 
-  // Calculate total safely
   const total = cart.reduce((sum, item) => {
-    // FIX: Use (item as any) to bypass TypeScript error if 'price' is missing on type
-    const price = item.selectedVariant 
-      ? item.selectedVariant.price 
-      : (item as any).price || 0;
-    return sum + (Number(price) * item.qty);
+    return sum + (Number(item.selectedVariant.price) * item.qty);
   }, 0);
 
   const clearCart = () => setCart([]);
 
   if (cart.length === 0) return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-      <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-4xl shadow-inner">🛒</div>
-      <h2 className="text-2xl font-bold text-[#1A202C] mb-2">Your Cart is Empty</h2>
-      <p className="text-gray-500">Looks like you haven't added any sweets yet.</p>
+      <div className="w-24 h-24 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4 text-4xl shadow-inner">🛒</div>
+      <h2 className="text-2xl font-bold text-[#1A202C] dark:text-gray-100 mb-2">Your Cart is Empty</h2>
+      <p className="text-gray-500 dark:text-gray-400">Looks like you haven't added any sweets yet.</p>
     </div>
   );
 
@@ -38,50 +33,39 @@ export default function Cart({ cart, setCart }: CartProps) {
       <div className="grid md:grid-cols-3 gap-10">
         {/* Cart List */}
         <div className="md:col-span-2 space-y-4">
-          {cart.map((item, idx) => {
-             // FIX: Safe access using casting
-             const displayPrice = item.selectedVariant 
-                ? item.selectedVariant.price 
-                : (item as any).price || 0;
+          {cart.map((item, idx) => (
+            <div key={idx} className="flex gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700">
+              <img src={item.imageUrl} className="w-24 h-24 object-cover rounded-xl bg-gray-50 dark:bg-slate-700" alt={item.title}/>
+              <div className="flex-grow flex flex-col justify-center">
+                <h3 className="font-bold text-lg text-[#1A202C] dark:text-gray-100">{item.title}</h3>
+                <p className="text-gray-400 text-sm">{item.selectedVariant.weight} kg</p>
                 
-             const displayWeight = item.selectedVariant 
-                ? item.selectedVariant.weight 
-                : (item as any).weight || 0;
-
-             return (
-              <div key={idx} className="flex gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                <img src={item.imageUrl} className="w-24 h-24 object-cover rounded-xl bg-gray-50" alt={item.title}/>
-                <div className="flex-grow flex flex-col justify-center">
-                  <h3 className="font-bold text-lg text-[#1A202C]">{item.title}</h3>
-                  <p className="text-gray-400 text-sm">{displayWeight} kg</p>
-                  
-                  {item.customMessage && (
-                    <p className="text-sm text-[#43766C] mt-1 bg-gray-50 p-1.5 rounded">
-                      Msg: "{item.customMessage}"
-                    </p>
-                  )}
-                  {item.customization && (
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      Note: {item.customization}
-                    </p>
-                  )}
-                  
-                  <p className="text-[#B19470] font-bold mt-2">₹{displayPrice}</p>
-                </div>
-                <div className="flex items-center px-4 font-bold text-gray-400 bg-gray-50 rounded-lg h-10 self-center">
-                  x{item.qty}
-                </div>
+                {item.customMessage && (
+                  <p className="text-sm text-[#43766C] mt-1 bg-gray-50 dark:bg-slate-700 p-1.5 rounded">
+                    Msg: "{item.customMessage}"
+                  </p>
+                )}
+                {item.customization && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    Note: {item.customization}
+                  </p>
+                )}
+                
+                <p className="text-[#B19470] font-bold mt-2">₹{item.selectedVariant.price}</p>
               </div>
-            );
-          })}
+              <div className="flex items-center px-4 font-bold text-gray-400 bg-gray-50 dark:bg-slate-700 rounded-lg h-10 self-center">
+                x{item.qty}
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Action Panel - Pure Navigation */}
-        <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 h-fit">
-          <h3 className="text-xl font-bold text-[#1A202C] mb-6">Order Summary</h3>
+        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-slate-700 h-fit">
+          <h3 className="text-xl font-bold text-[#1A202C] dark:text-gray-100 mb-6">Order Summary</h3>
           
           <div className="flex justify-between items-center mb-6 pt-2">
-            <span className="text-gray-500 font-medium">Total</span>
+            <span className="text-gray-500 dark:text-gray-400 font-medium">Total</span>
             <span className="text-3xl font-bold text-[#43766C]">₹{total}</span>
           </div>
 

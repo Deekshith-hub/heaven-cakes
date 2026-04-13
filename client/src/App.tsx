@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { useState, useEffect, type JSX } from 'react';
 import type { CartItem, Product, Variant } from './types';
 
@@ -51,42 +52,44 @@ export default function App() {
   };
 
   return (
-    <AuthProvider>
-      <Router>
-        <div className="flex flex-col min-h-screen font-sans text-[#1A202C] bg-[#F7FAFC]">
-          {/* Pass Search Props to Navbar */}
-          <Navbar 
-            cartCount={cart.reduce((a, c) => a + c.qty, 0)} 
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
-          
-          <Toaster 
-            position="top-center" 
-            toastOptions={{
-              style: { background: '#1A202C', color: '#fff', borderRadius: '12px' },
-              success: { iconTheme: { primary: '#43766C', secondary: '#fff' } }
-            }} 
-          />
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <div className="flex flex-col min-h-screen font-sans text-[#1A202C] dark:text-gray-100 bg-[#F7FAFC] dark:bg-slate-900 transition-colors duration-300">
+            {/* Pass Search Props to Navbar */}
+            <Navbar 
+              cartCount={cart.reduce((a, c) => a + c.qty, 0)} 
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
+            
+            <Toaster 
+              position="top-center" 
+              toastOptions={{
+                style: { background: '#1A202C', color: '#fff', borderRadius: '12px' },
+                success: { iconTheme: { primary: '#43766C', secondary: '#fff' } }
+              }} 
+            />
 
-          <main className="flex-grow">
-            <Routes>
-              {/* Pass Search Term to Home */}
-              <Route path="/" element={<Home addToCart={addToCart} searchTerm={searchTerm} />} />
-              <Route path="/cart" element={<Cart cart={cart} setCart={setCart} />} />
-              <Route path="/checkout" element={<Checkout cart={cart} setCart={setCart} />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/admin" element={
-                <ProtectedRoute>
-                  <Admin />
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </main>
+            <main className="flex-grow">
+              <Routes>
+                {/* Pass Search Term to Home */}
+                <Route path="/" element={<Home addToCart={addToCart} searchTerm={searchTerm} />} />
+                <Route path="/cart" element={<Cart cart={cart} setCart={setCart} />} />
+                <Route path="/checkout" element={<Checkout cart={cart} setCart={setCart} />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/admin" element={
+                  <ProtectedRoute>
+                    <Admin />
+                  </ProtectedRoute>
+                } />
+              </Routes>
+            </main>
 
-          <Footer />
-        </div>
-      </Router>
-    </AuthProvider>
+            <Footer />
+          </div>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

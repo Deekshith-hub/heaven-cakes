@@ -4,6 +4,12 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import type { Order } from '../types';
 
+interface User {
+  _id: string;
+  username: string;
+  role: string;
+}
+
 export default function Admin() {
   const { role, logout, token } = useAuth();
   const [activeTab, setActiveTab] = useState<'cakes' | 'orders' | 'users'>('orders');
@@ -17,10 +23,10 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [variants, setVariants] = useState([{ weight: 0.5, price: 0 }]);
   const [cakeForm, setCakeForm] = useState({ title: '', description: '', category: 'Ice Cake' });
-  const fileInputRef = useRef<HTMLInputElement>(null); // Ref to clear file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // User Management
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [newUserForm, setNewUserForm] = useState({ username: '', password: '', role: 'admin' });
 
   const api = axios.create({ baseURL: import.meta.env.VITE_API_URL, headers: { Authorization: `Bearer ${token}` } });
@@ -35,7 +41,7 @@ export default function Admin() {
     try {
       const res = await api.get('/orders');
       setOrders(res.data);
-    } catch (e) { toast.error('Failed to load orders'); }
+    } catch { toast.error('Failed to load orders'); }
     finally { setOrderLoading(false); }
   };
 
@@ -43,15 +49,15 @@ export default function Admin() {
     try {
         const res = await api.get('/users');
         setUsers(res.data);
-    } catch (e) { toast.error('Failed to load users'); }
+    } catch { toast.error('Failed to load users'); }
   };
 
   const updateStatus = async (id: string, status: string) => {
     try {
       await api.put(`/orders/${id}`, { status });
       toast.success('Status Updated');
-      fetchOrders(); // Refresh to see changes
-    } catch (e) { toast.error('Update failed'); }
+      fetchOrders();
+    } catch { toast.error('Update failed'); }
   };
 
   const handleUploadCake = async (e: React.FormEvent) => {
@@ -66,14 +72,12 @@ export default function Admin() {
     try { 
         await api.post('/products', formData); 
         toast.success('Cake Uploaded Successfully! 🎂'); 
-        
-        // --- CLEAR FORM ---
         setCakeForm({ title: '', description: '', category: 'Ice Cake' });
         setVariants([{ weight: 0.5, price: 0 }]);
         setFile(null);
         if(fileInputRef.current) fileInputRef.current.value = ""; 
     } 
-    catch (e) { toast.error('Upload failed'); } 
+    catch { toast.error('Upload failed'); } 
     finally { setLoading(false); }
   };
 
@@ -82,16 +86,16 @@ export default function Admin() {
     try { 
         await api.post('/users', newUserForm); 
         toast.success('User Created'); 
-        setNewUserForm({ username: '', password: '', role: 'admin' }); // Clear Form
+        setNewUserForm({ username: '', password: '', role: 'admin' });
         fetchUsers(); 
     }
-    catch (e) { toast.error('Failed'); }
+    catch { toast.error('Failed'); }
   };
 
   const handleDeleteUser = async (id: string) => {
       if(confirm('Delete user?')) {
           try { await api.delete(`/users/${id}`); toast.success('User Deleted'); fetchUsers(); }
-          catch (e) { toast.error('Failed'); }
+          catch { toast.error('Failed'); }
       }
   };
 
@@ -114,17 +118,17 @@ export default function Admin() {
             <p className="text-gray-400 text-sm">Welcome back, {role === 'super-admin' ? 'Boss' : 'Baker'}</p>
         </div>
         <div className="flex gap-3 items-center self-end md:self-auto">
-            <span className="text-xs font-bold bg-[#F8FAE5] text-[#43766C] px-3 py-1.5 rounded-full uppercase border border-[#43766C]/10 tracking-wider">{role}</span>
-            <button onClick={logout} className="text-red-500 text-sm font-bold hover:bg-red-50 px-3 py-1.5 rounded-lg transition">Logout</button>
+            <span className="text-xs font-bold bg-[#F8FAE5] dark:bg-slate-700 text-[#43766C] px-3 py-1.5 rounded-full uppercase border border-[#43766C]/10 tracking-wider">{role}</span>
+            <button onClick={logout} className="text-red-500 text-sm font-bold hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-1.5 rounded-lg transition">Logout</button>
         </div>
       </div>
 
       {/* Scrollable Tabs */}
-      <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide border-b border-gray-100">
-        <button onClick={() => setActiveTab('orders')} className={`whitespace-nowrap px-5 py-2.5 rounded-full font-bold text-sm transition-all ${activeTab === 'orders' ? 'bg-[#43766C] text-white shadow-md' : 'text-gray-500 hover:bg-gray-100'}`}>Orders</button>
-        <button onClick={() => setActiveTab('cakes')} className={`whitespace-nowrap px-5 py-2.5 rounded-full font-bold text-sm transition-all ${activeTab === 'cakes' ? 'bg-[#43766C] text-white shadow-md' : 'text-gray-500 hover:bg-gray-100'}`}>Upload Cake</button>
+      <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide border-b border-gray-100 dark:border-slate-700">
+        <button onClick={() => setActiveTab('orders')} className={`whitespace-nowrap px-5 py-2.5 rounded-full font-bold text-sm transition-all ${activeTab === 'orders' ? 'bg-[#43766C] text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'}`}>Orders</button>
+        <button onClick={() => setActiveTab('cakes')} className={`whitespace-nowrap px-5 py-2.5 rounded-full font-bold text-sm transition-all ${activeTab === 'cakes' ? 'bg-[#43766C] text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'}`}>Upload Cake</button>
         {role === 'super-admin' && (
-             <button onClick={() => setActiveTab('users')} className={`whitespace-nowrap px-5 py-2.5 rounded-full font-bold text-sm transition-all ${activeTab === 'users' ? 'bg-[#43766C] text-white shadow-md' : 'text-gray-500 hover:bg-gray-100'}`}>Users</button>
+             <button onClick={() => setActiveTab('users')} className={`whitespace-nowrap px-5 py-2.5 rounded-full font-bold text-sm transition-all ${activeTab === 'users' ? 'bg-[#43766C] text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'}`}>Users</button>
         )}
       </div>
 
@@ -133,10 +137,10 @@ export default function Admin() {
         <div className="space-y-4">
             {orderLoading && <div className="text-center py-10 text-gray-400">Loading orders...</div>}
             
-            {/* Desktop Table View (Hidden on Mobile) */}
-            <div className="hidden md:block bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            {/* Desktop Table View */}
+            <div className="hidden md:block bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
                 <table className="w-full text-left border-collapse">
-                    <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
+                    <thead className="bg-gray-50 dark:bg-slate-700 text-gray-500 dark:text-gray-400 text-xs uppercase">
                     <tr>
                         <th className="p-4">Details</th>
                         <th className="p-4">Delivery Slot</th>
@@ -145,19 +149,19 @@ export default function Admin() {
                         <th className="p-4">Status</th>
                     </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
                     {orders.map(order => (
-                        <tr key={order._id} className="hover:bg-gray-50/50 transition">
+                        <tr key={order._id} className="hover:bg-gray-50/50 dark:hover:bg-slate-700/50 transition">
                         <td className="p-4">
-                            <p className="font-bold text-[#1A202C]">{order.customerName}</p>
+                            <p className="font-bold text-[#1A202C] dark:text-gray-100">{order.customerName}</p>
                             <p className="text-xs text-gray-400">{order.phone}</p>
                         </td>
                         <td className="p-4">
-                            <p className="text-sm font-medium">{new Date(order.deliveryDate).toDateString()}</p>
+                            <p className="text-sm font-medium dark:text-gray-200">{new Date(order.deliveryDate).toDateString()}</p>
                             <p className="text-xs text-[#B19470] font-bold">{order.timeSlot}</p>
                         </td>
                         <td className="p-4">
-                            <div className="text-sm font-medium">{order.items.length} Items</div>
+                            <div className="text-sm font-medium dark:text-gray-200">{order.items.length} Items</div>
                             <div className="text-xs text-gray-400 truncate max-w-[150px]">{order.items.map(i => `${i.title} (${i.weight}kg)`).join(', ')}</div>
                         </td>
                         <td className="p-4 font-bold text-[#43766C]">₹{order.totalAmount}</td>
@@ -176,25 +180,25 @@ export default function Admin() {
                 </table>
             </div>
 
-            {/* Mobile Card View (Hidden on Desktop) */}
+            {/* Mobile Card View */}
             <div className="md:hidden space-y-4">
                 {orders.map(order => (
-                    <div key={order._id} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 animate-slide-up">
+                    <div key={order._id} className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 animate-slide-up">
                         <div className="flex justify-between items-start mb-3">
                             <div>
-                                <h3 className="font-bold text-[#1A202C]">{order.customerName}</h3>
+                                <h3 className="font-bold text-[#1A202C] dark:text-gray-100">{order.customerName}</h3>
                                 <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</p>
                             </div>
                             <span className="font-bold text-[#43766C] text-lg">₹{order.totalAmount}</span>
                         </div>
                         
-                        <div className="bg-[#F7FAFC] p-3 rounded-xl mb-3 space-y-1">
+                        <div className="bg-[#F7FAFC] dark:bg-slate-700 p-3 rounded-xl mb-3 space-y-1">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">Date:</span>
-                                <span className="font-medium">{new Date(order.deliveryDate).toDateString()}</span>
+                                <span className="text-gray-500 dark:text-gray-400">Date:</span>
+                                <span className="font-medium dark:text-gray-200">{new Date(order.deliveryDate).toDateString()}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">Time:</span>
+                                <span className="text-gray-500 dark:text-gray-400">Time:</span>
                                 <span className="font-bold text-[#B19470]">{order.timeSlot}</span>
                             </div>
                         </div>
@@ -202,7 +206,7 @@ export default function Admin() {
                         <div className="mb-4">
                             <p className="text-xs font-bold text-gray-400 uppercase mb-1">Items</p>
                             {order.items.map((item, idx) => (
-                                <div key={idx} className="text-sm text-gray-700 flex justify-between">
+                                <div key={idx} className="text-sm text-gray-700 dark:text-gray-300 flex justify-between">
                                     <span>{item.qty}x {item.title}</span>
                                     <span className="text-gray-400 text-xs">{item.weight}kg</span>
                                 </div>
@@ -220,28 +224,28 @@ export default function Admin() {
                 ))}
             </div>
 
-            {!orderLoading && orders.length === 0 && <div className="p-10 text-center text-gray-400 bg-white rounded-3xl border border-dashed">No orders received yet.</div>}
+            {!orderLoading && orders.length === 0 && <div className="p-10 text-center text-gray-400 bg-white dark:bg-slate-800 rounded-3xl border border-dashed dark:border-slate-700">No orders received yet.</div>}
         </div>
       )}
 
       {/* --- CAKE UPLOAD --- */}
       {activeTab === 'cakes' && (
-        <form onSubmit={handleUploadCake} className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 max-w-2xl mx-auto animate-slide-up">
-          <h2 className="text-xl font-bold mb-6 text-[#1A202C]">Upload New Cake</h2>
+        <form onSubmit={handleUploadCake} className="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 max-w-2xl mx-auto animate-slide-up">
+          <h2 className="text-xl font-bold mb-6 text-[#1A202C] dark:text-gray-100">Upload New Cake</h2>
           <div className="space-y-5">
              <div>
                 <label className="text-xs font-bold text-gray-400 uppercase ml-1">Cake Title</label>
-                <input placeholder="e.g. Chocolate Truffle" required className="w-full bg-[#F7FAFC] p-3 rounded-xl border border-gray-100 focus:border-[#43766C] outline-none transition mt-1" value={cakeForm.title} onChange={e => setCakeForm({...cakeForm, title: e.target.value})} />
+                <input placeholder="e.g. Chocolate Truffle" required className="w-full bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border border-gray-100 dark:border-slate-600 focus:border-[#43766C] outline-none transition mt-1" value={cakeForm.title} onChange={e => setCakeForm({...cakeForm, title: e.target.value})} />
              </div>
              
              <div>
                 <label className="text-xs font-bold text-gray-400 uppercase ml-1">Description</label>
-                <textarea placeholder="Describe the taste..." required rows={3} className="w-full bg-[#F7FAFC] p-3 rounded-xl border border-gray-100 focus:border-[#43766C] outline-none transition mt-1 resize-none" value={cakeForm.description} onChange={e => setCakeForm({...cakeForm, description: e.target.value})} />
+                <textarea placeholder="Describe the taste..." required rows={3} className="w-full bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border border-gray-100 dark:border-slate-600 focus:border-[#43766C] outline-none transition mt-1 resize-none" value={cakeForm.description} onChange={e => setCakeForm({...cakeForm, description: e.target.value})} />
              </div>
 
              <div>
                 <label className="text-xs font-bold text-gray-400 uppercase ml-1">Category</label>
-                <select className="w-full bg-[#F7FAFC] p-3 rounded-xl border border-gray-100 focus:border-[#43766C] outline-none mt-1" value={cakeForm.category} onChange={e => setCakeForm({...cakeForm, category: e.target.value})}>
+                <select className="w-full bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border border-gray-100 dark:border-slate-600 focus:border-[#43766C] outline-none mt-1" value={cakeForm.category} onChange={e => setCakeForm({...cakeForm, category: e.target.value})}>
                     <option>Ice Cake</option><option>Bento</option><option>Cupcake</option>
                 </select>
              </div>
@@ -250,18 +254,18 @@ export default function Admin() {
                 <label className="text-xs font-bold text-gray-400 uppercase ml-1 mb-2 block">Price Options</label>
                 {variants.map((v, i) => (
                   <div key={i} className="flex gap-3 mb-2">
-                    <input type="number" placeholder="Kg" className="bg-[#F7FAFC] p-3 rounded-xl border border-gray-100 w-1/3 text-center" value={v.weight} onChange={e => {const n = [...variants]; (n[i] as any).weight = e.target.value; setVariants(n)}} />
-                    <input type="number" placeholder="₹ Price" className="bg-[#F7FAFC] p-3 rounded-xl border border-gray-100 w-1/3 text-center" value={v.price} onChange={e => {const n = [...variants]; (n[i] as any).price = e.target.value; setVariants(n)}} />
+                    <input type="number" placeholder="Kg" className="bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border border-gray-100 dark:border-slate-600 w-1/3 text-center" value={v.weight} onChange={e => { const updatedVariants = [...variants]; updatedVariants[i] = { ...updatedVariants[i], weight: parseFloat(e.target.value) || 0 }; setVariants(updatedVariants); }} />
+                    <input type="number" placeholder="₹ Price" className="bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border border-gray-100 dark:border-slate-600 w-1/3 text-center" value={v.price} onChange={e => { const updatedVariants = [...variants]; updatedVariants[i] = { ...updatedVariants[i], price: parseFloat(e.target.value) || 0 }; setVariants(updatedVariants); }} />
                     {i > 0 && <button type="button" onClick={() => setVariants(variants.filter((_, idx) => idx !== i))} className="text-red-400 px-2 font-bold">×</button>}
                   </div>
                 ))}
                 <button type="button" onClick={() => setVariants([...variants, {weight:0, price:0}])} className="text-xs bg-[#43766C]/10 text-[#43766C] px-3 py-1.5 rounded-lg font-bold hover:bg-[#43766C]/20 transition mt-1">+ Add Size Variant</button>
              </div>
 
-             {/* Redesigned File Upload */}
+             {/* File Upload */}
              <div>
                  <label className="text-xs font-bold text-gray-400 uppercase ml-1 mb-1 block">Cake Image</label>
-                 <div className="relative border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:bg-gray-50 transition cursor-pointer group">
+                 <div className="relative border-2 border-dashed border-gray-200 dark:border-slate-600 rounded-2xl p-6 text-center hover:bg-gray-50 dark:hover:bg-slate-700 transition cursor-pointer group">
                     <input 
                         type="file" 
                         required 
@@ -270,10 +274,10 @@ export default function Admin() {
                         onChange={e => setFile(e.target.files?.[0] || null)} 
                     />
                     <div className="flex flex-col items-center justify-center space-y-2 pointer-events-none">
-                        <div className={`p-3 rounded-full ${file ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400 group-hover:text-[#43766C]'}`}>
+                        <div className={`p-3 rounded-full ${file ? 'bg-green-100 text-green-600' : 'bg-gray-100 dark:bg-slate-600 text-gray-400 group-hover:text-[#43766C]'}`}>
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
-                        <span className="text-sm font-medium text-gray-500">
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             {file ? <span className="text-green-600">{file.name}</span> : "Tap to upload image"}
                         </span>
                     </div>
@@ -290,23 +294,23 @@ export default function Admin() {
       {/* --- USERS (Super Admin) --- */}
       {activeTab === 'users' && role === 'super-admin' && (
         <div className="grid md:grid-cols-2 gap-8 animate-slide-up">
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-                <h3 className="font-bold mb-4 text-[#1A202C]">Create New User</h3>
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700">
+                <h3 className="font-bold mb-4 text-[#1A202C] dark:text-gray-100">Create New User</h3>
                 <form onSubmit={handleCreateUser} className="space-y-4">
-                    <input placeholder="Username" required className="w-full bg-[#F7FAFC] p-3 rounded-xl border-none outline-none focus:ring-1 focus:ring-[#43766C]" value={newUserForm.username} onChange={e => setNewUserForm({...newUserForm, username: e.target.value})} />
-                    <input type="password" required placeholder="Password" className="w-full bg-[#F7FAFC] p-3 rounded-xl border-none outline-none focus:ring-1 focus:ring-[#43766C]" value={newUserForm.password} onChange={e => setNewUserForm({...newUserForm, password: e.target.value})} />
-                    <select className="w-full bg-[#F7FAFC] p-3 rounded-xl border-none outline-none" value={newUserForm.role} onChange={e => setNewUserForm({...newUserForm, role: e.target.value})}><option value="admin">Admin</option><option value="super-admin">Super Admin</option></select>
+                    <input placeholder="Username" required className="w-full bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border-none outline-none focus:ring-1 focus:ring-[#43766C]" value={newUserForm.username} onChange={e => setNewUserForm({...newUserForm, username: e.target.value})} />
+                    <input type="password" required placeholder="Password" className="w-full bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border-none outline-none focus:ring-1 focus:ring-[#43766C]" value={newUserForm.password} onChange={e => setNewUserForm({...newUserForm, password: e.target.value})} />
+                    <select className="w-full bg-[#F7FAFC] dark:bg-slate-700 dark:text-gray-100 p-3 rounded-xl border-none outline-none" value={newUserForm.role} onChange={e => setNewUserForm({...newUserForm, role: e.target.value})}><option value="admin">Admin</option><option value="super-admin">Super Admin</option></select>
                     <button className="w-full bg-[#43766C] text-white py-3 rounded-xl font-bold shadow-md active:scale-95 transition">Create User</button>
                 </form>
             </div>
             <div className="space-y-3">
                 {users.map(u => (
-                    <div key={u._id} className="flex justify-between p-4 bg-white rounded-2xl shadow-sm border border-gray-100 items-center">
+                    <div key={u._id} className="flex justify-between p-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 items-center">
                         <div>
-                            <p className="font-bold text-[#1A202C]">{u.username}</p>
+                            <p className="font-bold text-[#1A202C] dark:text-gray-100">{u.username}</p>
                             <p className="text-xs text-gray-400 uppercase tracking-wider">{u.role}</p>
                         </div>
-                        <button onClick={() => handleDeleteUser(u._id)} className="text-red-400 bg-red-50 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition">Delete</button>
+                        <button onClick={() => handleDeleteUser(u._id)} className="text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 dark:hover:bg-red-900/40 transition">Delete</button>
                     </div>
                 ))}
             </div>
